@@ -4,14 +4,12 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.pm.ApplicationInfo
 import android.graphics.Bitmap
+import android.net.http.SslError
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.webkit.JavascriptInterface
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.FrameLayout
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -39,6 +37,7 @@ class InteractiveWebviewPlugin(activity: Activity): MethodCallHandler {
     }
 
     private val webView = WebView(activity)
+    
     private val webClient = InteractiveWebViewClient(listOf())
 
     init {
@@ -131,6 +130,10 @@ class InteractiveWebViewClient(var restrictedSchemes: List<String>): WebViewClie
 
     override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
         return shouldOverrideUrlLoading(url)
+    }
+
+    override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+        handler?.cancel()
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
